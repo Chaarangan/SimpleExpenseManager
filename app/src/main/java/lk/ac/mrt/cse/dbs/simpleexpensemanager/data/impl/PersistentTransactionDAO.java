@@ -17,6 +17,7 @@
 package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -30,6 +31,7 @@ import java.util.Locale;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.MyDBHandler;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 
 /**
@@ -37,7 +39,13 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
  * transaction logs are stored in a LinkedList in memory.
  */
 public class PersistentTransactionDAO implements TransactionDAO {
-    SQLiteOpenHelper sqLiteOpenHelper;
+    Context context;
+    MyDBHandler myDBHandler;
+
+    public PersistentTransactionDAO(Context context) {
+        this.context = context;
+        myDBHandler = new MyDBHandler(context);
+    }
 
     @Override
     public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount){
@@ -47,7 +55,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
         values.put("expenseType", String.valueOf(expenseType));
         values.put("amount", amount);
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         db.insert("transactions", null, values);
         db.close();
@@ -57,7 +65,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
     public List<Transaction> getAllTransactionLogs() throws ParseException {
         String query = "Select * FROM transactions";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -88,7 +96,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
     public List<Transaction> getPaginatedTransactionLogs(int limit) throws ParseException {
         String query = "Select * FROM transactions LIMIT " + limit + "\"";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 

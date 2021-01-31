@@ -43,7 +43,7 @@ public abstract class ExpenseManager implements Serializable {
      *
      * @return
      */
-    public List<String> getAccountNumbersList() {
+    public List<String> getAccountNumbersList() throws InvalidAccountException {
         return accountsHolder.getAccountNumbersList();
     }
 

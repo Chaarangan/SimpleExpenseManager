@@ -29,19 +29,27 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.MyDBHandler;
 
 /**
  * This is an In-Memory implementation of the AccountDAO interface. This is not a persistent storage. A HashMap is
  * used to store the account details temporarily in the memory.
  */
 public class PersistentAccountDAO implements AccountDAO {
-    SQLiteOpenHelper sqLiteOpenHelper;
+    Context context;
+    MyDBHandler myDBHandler;
+
+    public PersistentAccountDAO(Context context) {
+        this.context = context;
+        myDBHandler = new MyDBHandler(context);
+    }
+
 
     @Override
-    public List<String> getAccountNumbersList(){
+    public List<String> getAccountNumbersList() throws InvalidAccountException {
         String query = "Select accountNo FROM  accounts";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -53,18 +61,19 @@ public class PersistentAccountDAO implements AccountDAO {
                 account_numbers.add(cursor.getString(0));
             }
             cursor.close();
+            db.close();
+            return account_numbers;
         } else {
-            account_numbers = null;
+            String msg = "No Numbers!";
+            throw new InvalidAccountException(msg);
         }
-        db.close();
-        return account_numbers;
     }
 
     @Override
-    public List<Account> getAccountsList(){
+    public List<Account> getAccountsList() throws InvalidAccountException {
         String query = "Select * FROM accounts";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -79,18 +88,19 @@ public class PersistentAccountDAO implements AccountDAO {
                 cursor.moveToNext();
             }
             cursor.close();
+            db.close();
+            return accounts;
         } else {
-            accounts = null;
+            String msg = "No Numbers!";
+            throw new InvalidAccountException(msg);
         }
-        db.close();
-        return accounts;
     }
 
     @Override
     public Account getAccount(String accountNo) throws InvalidAccountException {
-        String query = "Select * FROM accounts where _accountNo = " + accountNo + "\"";
+        String query = "Select * FROM accounts where accountNo = " + accountNo + "\"";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
         Account account;
@@ -99,12 +109,12 @@ public class PersistentAccountDAO implements AccountDAO {
             cursor.moveToFirst();
             account = new Account(accountNo, cursor.getString(1), cursor.getString(2), cursor.getDouble(3));
             cursor.close();
+            db.close();
+            return account;
         } else {
             String msg = "Account " + accountNo + " is invalid.";
             throw new InvalidAccountException(msg);
         }
-        db.close();
-        return account;
     }
 
     @Override
@@ -115,7 +125,7 @@ public class PersistentAccountDAO implements AccountDAO {
         values.put("accountHolderName", account.getAccountHolderName());
         values.put("balance", account.getBalance());
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         db.insert("accounts", null, values);
         db.close();
@@ -125,7 +135,7 @@ public class PersistentAccountDAO implements AccountDAO {
     public void removeAccount(String accountNo)  throws InvalidAccountException {
         String query = "Select * FROM accounts WHERE accountNo = " + accountNo + "\"";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -133,19 +143,19 @@ public class PersistentAccountDAO implements AccountDAO {
             db.delete("accounts", "accountNo" + " = ?",
                     new String[] { String.valueOf(accountNo)});
             cursor.close();
+            db.close();
         }
         else{
             String msg = "Account " + accountNo + " is invalid.";
             throw new InvalidAccountException(msg);
         }
-        db.close();
     }
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
-        String query = "Select balance FROM accounts where _accountNo = " + accountNo + "\"";
+        String query = "Select balance FROM accounts where accountNo = " + accountNo + "\"";
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -164,11 +174,11 @@ public class PersistentAccountDAO implements AccountDAO {
             String query1 = "UPDATE accounts SET balance = " + newBalance + " WHERE accountNo = " + accountNo;
             db.execSQL(query1);
             cursor.close();
+            db.close();
         }
         else{
             String msg = "Account " + accountNo + " is invalid.";
             throw new InvalidAccountException(msg);
         }
-        db.close();
     }
 }

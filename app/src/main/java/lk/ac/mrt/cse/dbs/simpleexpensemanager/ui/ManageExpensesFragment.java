@@ -71,8 +71,12 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
         ArrayAdapter<String> adapter =
                 null;
         if (currentExpenseManager != null) {
-            adapter = new ArrayAdapter<>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item,
-                    currentExpenseManager.getAccountNumbersList());
+            try {
+                adapter = new ArrayAdapter<>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item,
+                        currentExpenseManager.getAccountNumbersList());
+            } catch (InvalidAccountException e) {
+                e.printStackTrace();
+            }
         }
         accountSelector.setAdapter(adapter);
 
