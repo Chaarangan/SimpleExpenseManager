@@ -17,6 +17,7 @@
 package lk.ac.mrt.cse.dbs.simpleexpensemanager.control;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
@@ -39,6 +40,10 @@ public class PersistentExpenseManager extends ExpenseManager {
     @Override
     public void setup() throws InvalidAccountException {
         /*** Begin generating dummy data for In-Memory implementation ***/
+        MyDBHandler myDBHandler = new MyDBHandler(context);
+        SQLiteDatabase db = myDBHandler.getWritableDatabase();
+        myDBHandler.onCreate(db);
+
         AccountDAO persistentAccountDAO = new PersistentAccountDAO(context);
         TransactionDAO persistentTransactionDAO = new PersistentTransactionDAO(context);
         setAccountsDAO(persistentAccountDAO);

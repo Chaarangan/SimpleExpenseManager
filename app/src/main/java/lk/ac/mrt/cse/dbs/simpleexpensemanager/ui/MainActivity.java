@@ -72,18 +72,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         /***  Begin generating dummy data for In-Memory implementation  ***/
-        File dir = new File("/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager");
-        if(!dir.exists()){
-            dir.mkdirs();
-        }
-        File dir1 = new File("/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager/databases");
-        if(!dir1.exists()){
-            dir1.mkdirs();
-        }
-
-        MyDBHandler myDBHandler = new MyDBHandler(this);
-        SQLiteDatabase db = myDBHandler.getWritableDatabase();
-        myDBHandler.onCreate(db);
         try {
             expenseManager = new PersistentExpenseManager(this);
         } catch (InvalidAccountException e) {

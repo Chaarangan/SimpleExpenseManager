@@ -54,6 +54,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        File dir = new File("/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager");
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+        File dir1 = new File("/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager/databases");
+        if(!dir1.exists()){
+            dir1.mkdirs();
+        }
         String CREATE_ACCOUNT_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_ACCOUNT + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_ACCOUNT_NO + " VARCHAR, " + COLUMN_BANK_NAME
