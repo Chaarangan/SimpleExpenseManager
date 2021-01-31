@@ -75,8 +75,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
             cursor.moveToFirst();
 
             while(!cursor.isAfterLast()) {
-                DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.FRANCE);
-                Date date = df.parse(cursor.getString(1));
+                Date date = new Date(cursor.getString(1));
                 String accountNo = cursor.getString(2);
                 ExpenseType expenseType = ExpenseType.valueOf(cursor.getString(3));
                 double amount = cursor.getDouble(4);
@@ -84,11 +83,9 @@ public class PersistentTransactionDAO implements TransactionDAO {
                 transactions.add(transaction);
                 cursor.moveToNext();
             }
-
             cursor.close();
             db.close();
             return transactions;
-
         } else {
             String msg = "No Logs!";
             throw new InvalidAccountException(msg);
@@ -108,8 +105,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
             cursor.moveToFirst();
 
             while(!cursor.isAfterLast()) {
-                DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.ENGLISH);
-                Date date = df.parse(cursor.getString(1));
+                Date date = new Date(cursor.getString(1));
                 String accountNo = cursor.getString(2);
                 ExpenseType expenseType = ExpenseType.valueOf(cursor.getString(3));
                 double amount = cursor.getDouble(4);
