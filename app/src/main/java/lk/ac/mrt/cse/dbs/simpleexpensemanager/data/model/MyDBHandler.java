@@ -39,6 +39,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     @Override
+    public synchronized void close () {
+        if (db != null) {
+            db.close();
+            super.close();
+        }
+    }
+
+    @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         db.setForeignKeyConstraintsEnabled(true);
