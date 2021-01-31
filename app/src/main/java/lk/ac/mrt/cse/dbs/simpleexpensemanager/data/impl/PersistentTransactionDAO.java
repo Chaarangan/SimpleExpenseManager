@@ -97,7 +97,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
 
     @Override
     public List<Transaction> getPaginatedTransactionLogs(int limit) throws ParseException, InvalidAccountException {
-        String query = "Select * FROM transactions LIMIT " + limit;
+        String query = "Select * FROM transactions LIMIT " + "\"" + limit + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 

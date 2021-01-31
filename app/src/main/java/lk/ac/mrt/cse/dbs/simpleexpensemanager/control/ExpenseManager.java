@@ -88,7 +88,7 @@ public abstract class ExpenseManager implements Serializable {
      * @param accountHolderName
      * @param initialBalance
      */
-    public void addAccount(String accountNo, String bankName, String accountHolderName, double initialBalance) {
+    public void addAccount(String accountNo, String bankName, String accountHolderName, double initialBalance) throws InvalidAccountException {
         Account account = new Account(accountNo, bankName, accountHolderName, initialBalance);
         accountsHolder.addAccount(account);
     }
@@ -133,5 +133,5 @@ public abstract class ExpenseManager implements Serializable {
      * This method should be implemented by the concrete implementation of this class. It will dictate how the DAO
      * objects will be initialized.
      */
-    public abstract void setup() throws ExpenseManagerException;
+    public abstract void setup() throws ExpenseManagerException, InvalidAccountException;
 }

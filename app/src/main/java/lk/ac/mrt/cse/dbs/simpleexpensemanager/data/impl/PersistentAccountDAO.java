@@ -96,7 +96,7 @@ public class PersistentAccountDAO implements AccountDAO {
 
     @Override
     public Account getAccount(String accountNo) throws InvalidAccountException {
-        String query = "Select * FROM accounts where accountNo = " + accountNo + "\"";
+        String query = "Select * FROM accounts where accountNo = " + "\"" + accountNo + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
@@ -116,22 +116,32 @@ public class PersistentAccountDAO implements AccountDAO {
     }
 
     @Override
-    public void addAccount(Account account){
-        ContentValues values = new ContentValues();
-        values.put("accountNo", account.getAccountNo());
-        values.put("bankName", account.getBankName());
-        values.put("accountHolderName", account.getAccountHolderName());
-        values.put("balance", account.getBalance());
+    public void addAccount(Account account) throws InvalidAccountException {
+        String query = "Select * FROM accounts WHERE accountNo = " + "\"" + account.getAccountNo() + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
-        db.insert("accounts", null, values);
-        db.close();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
+            values.put("accountNo", account.getAccountNo());
+            values.put("bankName", account.getBankName());
+            values.put("accountHolderName", account.getAccountHolderName());
+            values.put("balance", account.getBalance());
+
+            db.insert("accounts", null, values);
+            db.close();
+        }
+        else{
+            String msg = "Account " +  account.getAccountNo() + " is already exists.";
+            throw new InvalidAccountException(msg);
+        }
     }
 
     @Override
     public void removeAccount(String accountNo)  throws InvalidAccountException {
-        String query = "Select * FROM accounts WHERE accountNo = " + accountNo + "\"";
+        String query = "Select * FROM accounts WHERE accountNo = " + "\"" + accountNo + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
@@ -151,7 +161,7 @@ public class PersistentAccountDAO implements AccountDAO {
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
-        String query = "Select * FROM accounts where accountNo = " + accountNo + "\"";
+        String query = "Select * FROM accounts where accountNo = " + "\"" + accountNo + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
@@ -168,7 +178,7 @@ public class PersistentAccountDAO implements AccountDAO {
             else{
                 newBalance = oldBalance + amount;
             }
-            String query1 = "UPDATE accounts SET balance = " + newBalance + " WHERE accountNo = " + accountNo;
+            String query1 = "UPDATE accounts SET balance = " + "\"" + newBalance + "\"" + " WHERE accountNo = " + "\"" + accountNo + "\"";
             db.execSQL(query1);
             cursor.close();
             db.close();

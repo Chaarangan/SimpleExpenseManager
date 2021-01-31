@@ -28,9 +28,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import java.io.File;
+
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.PersistentExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.MyDBHandler;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,10 +72,23 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         /***  Begin generating dummy data for In-Memory implementation  ***/
+        File dir = new File("/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager");
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+        File dir1 = new File("/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager/databases");
+        if(!dir1.exists()){
+            dir1.mkdirs();
+        }
+
         MyDBHandler myDBHandler = new MyDBHandler(this);
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
         myDBHandler.onCreate(db);
-        expenseManager = new PersistentExpenseManager(this);
+        try {
+            expenseManager = new PersistentExpenseManager(this);
+        } catch (InvalidAccountException e) {
+            e.printStackTrace();
+        }
         /*** END ***/
     }
 

@@ -56,7 +56,7 @@ public interface AccountDAO {
      *
      * @param account - the account to be added.
      */
-    void addAccount(Account account);
+    void addAccount(Account account) throws InvalidAccountException;
 
     /***
      * Remove an account from the accounts collection.
