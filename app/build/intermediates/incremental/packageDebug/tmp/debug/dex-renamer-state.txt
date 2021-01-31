@@ -1,0 +1,4 @@
+#Sun Jan 31 12:10:36 IST 2021
+base.0=C\:\\Users\\User\\Desktop\\DBMS - Mini\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
