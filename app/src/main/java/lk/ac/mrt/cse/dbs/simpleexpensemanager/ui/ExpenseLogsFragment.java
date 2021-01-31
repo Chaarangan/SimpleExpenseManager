@@ -32,6 +32,7 @@ import java.util.List;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 
 import static lk.ac.mrt.cse.dbs.simpleexpensemanager.Constants.EXPENSE_MANAGER;
@@ -63,7 +64,7 @@ public class ExpenseLogsFragment extends Fragment {
         if (currentExpenseManager != null) {
             try {
                 transactionList = currentExpenseManager.getTransactionLogs();
-            } catch (ParseException e) {
+            } catch (ParseException | InvalidAccountException e) {
                 e.printStackTrace();
             }
         }

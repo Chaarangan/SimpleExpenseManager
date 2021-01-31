@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 
@@ -43,7 +44,7 @@ public interface TransactionDAO {
      *
      * @return - a list of all the transactions
      */
-    public List<Transaction> getAllTransactionLogs() throws ParseException;
+    public List<Transaction> getAllTransactionLogs() throws ParseException, InvalidAccountException;
 
     /***
      * Return a limited amount of transactions logged.
@@ -51,5 +52,5 @@ public interface TransactionDAO {
      * @param limit - number of transactions to be returned
      * @return - a list of requested number of transactions
      */
-    public List<Transaction> getPaginatedTransactionLogs(int limit) throws ParseException;
+    public List<Transaction> getPaginatedTransactionLogs(int limit) throws ParseException, InvalidAccountException;
 }

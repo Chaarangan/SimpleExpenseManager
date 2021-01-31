@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.MyDBHandler;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
@@ -62,18 +63,17 @@ public class PersistentTransactionDAO implements TransactionDAO {
     }
 
     @Override
-    public List<Transaction> getAllTransactionLogs() throws ParseException {
+    public List<Transaction> getAllTransactionLogs() throws ParseException, InvalidAccountException {
         String query = "Select * FROM transactions";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
-        List<Transaction> transactions = new ArrayList<Transaction>();
-
-
         if (cursor.moveToFirst()) {
+            List<Transaction> transactions = new ArrayList<Transaction>();
             cursor.moveToFirst();
+
             while(!cursor.isAfterLast()) {
                 DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.FRANCE);
                 Date date = df.parse(cursor.getString(1));
@@ -84,26 +84,31 @@ public class PersistentTransactionDAO implements TransactionDAO {
                 transactions.add(transaction);
                 cursor.moveToNext();
             }
+
             cursor.close();
+            db.close();
+            return transactions;
+
         } else {
-            transactions = null;
+            String msg = "No Logs!";
+            throw new InvalidAccountException(msg);
         }
-        db.close();
-        return transactions;
     }
 
     @Override
-    public List<Transaction> getPaginatedTransactionLogs(int limit) throws ParseException {
+    public List<Transaction> getPaginatedTransactionLogs(int limit) throws ParseException, InvalidAccountException {
         String query = "Select * FROM transactions LIMIT " + limit + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
-        List<Transaction> transactions = new ArrayList<Transaction>();
+
 
         if (cursor.moveToFirst()) {
+            List<Transaction> transactions = new ArrayList<Transaction>();
             cursor.moveToFirst();
+
             while(!cursor.isAfterLast()) {
                 DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.ENGLISH);
                 Date date = df.parse(cursor.getString(1));
@@ -115,10 +120,11 @@ public class PersistentTransactionDAO implements TransactionDAO {
                 cursor.moveToNext();
             }
             cursor.close();
+            db.close();
+            return transactions;
         } else {
-            transactions = null;
+            String msg = "No Log Found!";
+            throw new InvalidAccountException(msg);
         }
-        db.close();
-        return transactions;
     }
 }

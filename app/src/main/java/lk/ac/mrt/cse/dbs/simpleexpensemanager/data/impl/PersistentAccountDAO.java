@@ -47,18 +47,18 @@ public class PersistentAccountDAO implements AccountDAO {
 
     @Override
     public List<String> getAccountNumbersList() throws InvalidAccountException {
-        String query = "Select accountNo FROM  accounts";
+        String query = "Select * FROM  accounts";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
-        List<String> account_numbers = new ArrayList<String>();
-
         if (cursor.moveToFirst()) {
+            List<String> account_numbers = new ArrayList<String>();
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
-                account_numbers.add(cursor.getString(0));
+                account_numbers.add(cursor.getString(1));
+                cursor.moveToNext();
             }
             cursor.close();
             db.close();
@@ -77,13 +77,11 @@ public class PersistentAccountDAO implements AccountDAO {
 
         Cursor cursor = db.rawQuery(query, null);
 
-        List<Account> accounts = new ArrayList<Account>();
-
-
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
+            List<Account> accounts = new ArrayList<Account>();
             while(!cursor.isAfterLast()) {
-                Account account = new Account(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getDouble(3));
+                Account account = new Account(cursor.getString(1), cursor.getString(3), cursor.getString(3), cursor.getDouble(4));
                 accounts.add(account);
                 cursor.moveToNext();
             }
@@ -103,11 +101,11 @@ public class PersistentAccountDAO implements AccountDAO {
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
-        Account account;
 
         if (cursor.moveToFirst()) {
+            Account account;
             cursor.moveToFirst();
-            account = new Account(accountNo, cursor.getString(1), cursor.getString(2), cursor.getDouble(3));
+            account = new Account(accountNo, cursor.getString(2), cursor.getString(3), cursor.getDouble(4));
             cursor.close();
             db.close();
             return account;
@@ -153,7 +151,7 @@ public class PersistentAccountDAO implements AccountDAO {
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
-        String query = "Select balance FROM accounts where accountNo = " + accountNo + "\"";
+        String query = "Select * FROM accounts where accountNo = " + accountNo + "\"";
 
         SQLiteDatabase db = myDBHandler.getWritableDatabase();
 
@@ -161,16 +159,15 @@ public class PersistentAccountDAO implements AccountDAO {
 
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            double oldBalance = Integer.parseInt(cursor.getString(3));
+            double oldBalance = Double.parseDouble(cursor.getString(4));
+            double newBalance;
 
-            double newBalance = 0;
             if(expenseType.equals("EXPENSE")){
                 newBalance = oldBalance - amount;
             }
             else{
                 newBalance = oldBalance + amount;
             }
-
             String query1 = "UPDATE accounts SET balance = " + newBalance + " WHERE accountNo = " + accountNo;
             db.execSQL(query1);
             cursor.close();

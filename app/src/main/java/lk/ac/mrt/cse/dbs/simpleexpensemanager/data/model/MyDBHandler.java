@@ -48,14 +48,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ACCOUNT_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_ACCOUNT + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_ACCOUNT_NO + " TEXT , " + COLUMN_BANK_NAME
-                + " TEXT, " + COLUMN_ACCOUNT_HOLDER_NAME + " TEXT, " + COLUMN_BALANCE + " REAL )";
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COLUMN_ACCOUNT_NO + " VARCHAR, " + COLUMN_BANK_NAME
+                + " VARCHAR, " + COLUMN_ACCOUNT_HOLDER_NAME + " VARCHAR, " + COLUMN_BALANCE + " DOUBLE )";
         db.execSQL(CREATE_ACCOUNT_TABLE);
 
         String CREATE_TRANSACTION_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_TRANSACTION + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_DATE + " TEXT , " + COLUMN_ACCOUNT_NUMBER + " TEXT, " + COLUMN_EXPENSE_TYPE
-                + " TEXT, " + COLUMN_AMOUNT + " REAL, FOREIGN KEY (" + COLUMN_ACCOUNT_NO + ") " +
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_DATE + " VARCHAR , " + COLUMN_ACCOUNT_NUMBER + " VARCHAR, " + COLUMN_EXPENSE_TYPE
+                + " VARCHAR, " + COLUMN_AMOUNT + " DOUBLE, FOREIGN KEY (" + COLUMN_ACCOUNT_NUMBER + ") " +
                 "      REFERENCES "+ TABLE_ACCOUNT + "(" + COLUMN_ACCOUNT_NUMBER + ") " +
                 "         ON DELETE CASCADE " +
                 "         ON UPDATE NO ACTION)";
