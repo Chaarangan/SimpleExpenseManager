@@ -76,6 +76,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 "         ON DELETE CASCADE " +
                 "         ON UPDATE NO ACTION)";
         db.execSQL(CREATE_TRANSACTION_TABLE);
+
+        String query1 = "INSERT INTO accounts (accountNo, bankName, accountHolderName, balance) values (\"12345A\", \"BOC\", \"Charangan\", \"2500.00\")";
+        db.execSQL(query1);
     }
 
     @Override
