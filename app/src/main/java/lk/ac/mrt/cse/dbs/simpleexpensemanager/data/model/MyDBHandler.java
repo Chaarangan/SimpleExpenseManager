@@ -11,7 +11,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_PATH = "/data/data/lk.ac.mrt.cse.dbs.simpleexpensemanager/databases";
-    private static final String DATABASE_NAME = "mydatabase";
+    private static final String DATABASE_NAME = "180094m";
 
     //Table account
     public static final String TABLE_ACCOUNT = "accounts";
